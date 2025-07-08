@@ -1,22 +1,27 @@
 class Solution {
-    public int maxValue(int[][] events, int k) {
-        Arrays.sort(events, (a, b) -> a[1] - b[1]); 
-        int n = events.length;
+public:
+    int maxValue(vector<vector<int>>& events, int k) {
+        sort(events.begin(), events.end(), [](const vector<int>& a, const vector<int>& b) {
+            return a[1] < b[1];
+        });
 
-        int[][] dp = new int[n + 1][k + 1];
+        int n = events.size();
+        vector<vector<int>> dp(n + 1, vector<int>(k + 1, 0));
 
-        for (int i = 1; i <= n; i++) {
-            int[] event = events[i - 1];
-            int prev = binarySearch(events, event[0]);
+        for (int i = 1; i <= n; ++i) {
+            int prev = binarySearch(events, events[i - 1][0]);
 
-            for (int j = 1; j <= k; j++) {
-                dp[i][j] = Math.max(dp[i - 1][j], dp[prev + 1][j - 1] + event[2]);
+            for (int j = 1; j <= k; ++j) {
+                dp[i][j] = max(dp[i - 1][j], dp[prev + 1][j - 1] + events[i - 1][2]);
             }
         }
+
         return dp[n][k];
     }
-    private int binarySearch(int[][] events, int currentStart) {
-        int left = 0, right = events.length - 1;
+
+private:
+    int binarySearch(vector<vector<int>>& events, int currentStart) {
+        int left = 0, right = events.size() - 1;
         int result = -1;
 
         while (left <= right) {
@@ -28,6 +33,7 @@ class Solution {
                 right = mid - 1;
             }
         }
+
         return result;
     }
-}
+};
